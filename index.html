@@ -173,14 +173,15 @@
       padding: 40px 20px;
     }
 
-    .brand-title {
-      font-family: "Montserrat", sans-serif;
-      font-size: clamp(42px, 7vw, 82px);
-      font-weight: 800;
-      color: #2f2a24;
-      letter-spacing: -1px;
-      margin-bottom: 10px;
-    }
+.brand-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: clamp(42px, 7vw, 82px);
+  font-weight: 600;
+  color: #2f2a24;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
 
     .brand-quote {
       font-size: 18px;
@@ -203,34 +204,6 @@
 
     .upload-main-btn:hover {
       opacity: 0.95;
-    }
-
-    .live-banner {
-      position: absolute;
-      top: 16px;
-      right: 18px;
-      background: rgba(255,255,255,0.96);
-      border: 1px solid #eadfce;
-      color: #6d6257;
-      padding: 8px 12px;
-      font-size: 12px;
-      border-radius: 999px;
-      display: none;
-      z-index: 5;
-      font-family: "Open Sans", sans-serif;
-    }
-
-    .live-banner.show {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .live-record-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #cf3a3a;
     }
 
     .toast {
@@ -294,10 +267,13 @@
       align-items: center;
     }
 
-    .drawer-header h2 {
-      font-size: 18px;
-      font-family: "Montserrat", sans-serif;
-    }
+.drawer-header h2 {
+  font-size: 18px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
 
     .close-btn {
       border: none;
@@ -434,7 +410,7 @@
 
   <aside class="drawer" id="drawer">
     <div class="drawer-header">
-      <h2>Reconance</h2>
+      <h2>RECONANCE</h2>
       <button class="close-btn" onclick="closeDrawer()">×</button>
     </div>
 
@@ -495,15 +471,11 @@
 
     <div class="main-area">
       <div class="sheet-container">
-        <div class="live-banner" id="liveBanner">
-          <span class="live-record-dot"></span>
-          <span id="liveBannerText">Live recording active</span>
-        </div>
 
         <iframe id="pdfViewer" class="pdf-viewer"></iframe>
 
         <div class="empty-state" id="emptyState">
-          <h1 class="brand-title">Reconance</h1>
+          <h1 class="brand-title">RECONANCE</h1>
           <p class="brand-quote">musical bridge between generations</p>
           <label class="upload-main-btn" for="pdfUpload">Upload sheet music</label>
         </div>
@@ -523,8 +495,6 @@
     const statusPopover = document.getElementById("statusPopover");
     const statusLabel = document.getElementById("statusLabel");
     const statusDot = document.getElementById("statusDot");
-    const liveBanner = document.getElementById("liveBanner");
-    const liveBannerText = document.getElementById("liveBannerText");
 
     const stateIdle = document.getElementById("stateIdle");
     const stateLive = document.getElementById("stateLive");
@@ -568,7 +538,6 @@
       stateIdle.classList.remove("active");
       stateLive.classList.remove("active");
       stateListening.classList.remove("active");
-      liveBanner.classList.remove("show");
 
       if (currentState === "idle") {
         statusLabel.textContent = "RESONANCE · Idle";
@@ -580,16 +549,12 @@
         statusLabel.textContent = "RESONANCE · Live";
         statusDot.style.background = "#cf3a3a";
         stateLive.classList.add("active");
-        liveBanner.classList.add("show");
-        liveBannerText.textContent = "Live recording active";
       }
 
       if (currentState === "listening") {
         statusLabel.textContent = "RESONANCE · Listening";
         statusDot.style.background = "#a16a2f";
         stateListening.classList.add("active");
-        liveBanner.classList.add("show");
-        liveBannerText.textContent = "Someone is listening";
       }
     }
 
