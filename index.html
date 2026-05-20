@@ -3,13 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resonance</title>
+  <title>Reconance</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
@@ -20,6 +24,7 @@
       align-items: flex-start;
       padding: 28px;
       color: #1f1f1f;
+      font-family: "Open Sans", sans-serif;
     }
 
     .app-shell {
@@ -65,6 +70,7 @@
       font-weight: 700;
       letter-spacing: 0.4px;
       cursor: pointer;
+      font-family: "Open Sans", sans-serif;
     }
 
     .status-dot {
@@ -112,45 +118,31 @@
       font-weight: 700;
     }
 
-    .app-title {
-      font-size: 15px;
-      color: #6f675d;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
-
     .hamburger {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       border: none;
       border-radius: 12px;
       background: #ede7dd;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 5px;
-      padding: 0 11px;
+      gap: 6px;
+      padding: 0 10px;
       cursor: pointer;
     }
 
     .hamburger span {
       display: block;
-      height: 2px;
-      background: #2b2b2b;
-      border-radius: 2px;
+      height: 3px;
+      background: #111111;
+      border-radius: 3px;
+      width: 100%;
     }
 
     .main-area {
       padding: 22px;
       position: relative;
-    }
-
-    .page-label {
-      text-align: center;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: #403a34;
     }
 
     .sheet-container {
@@ -171,41 +163,46 @@
       border-radius: 10px;
     }
 
-    .placeholder {
-      display: flex;
-      flex-direction: column;
-      gap: 52px;
-      padding: 10px 10px 18px;
+    .empty-state {
       min-height: 72vh;
-    }
-
-    .staff {
       display: flex;
       flex-direction: column;
-      gap: 7px;
-      position: relative;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 20px;
     }
 
-    .staff-line {
-      height: 1px;
-      background: #222;
-      opacity: 0.8;
+    .brand-title {
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(42px, 7vw, 82px);
+      font-weight: 800;
+      color: #2f2a24;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
     }
 
-    .notes {
-      position: absolute;
-      top: -4px;
-      left: 0;
-      width: 100%;
-      height: 46px;
-      pointer-events: none;
+    .brand-quote {
+      font-size: 18px;
+      color: #7c746c;
+      margin-bottom: 28px;
+      font-weight: 400;
     }
 
-    .notes svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      opacity: 0.9;
+    .upload-main-btn {
+      border: none;
+      background: #d8bf99;
+      color: #2d241c;
+      padding: 16px 22px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: "Open Sans", sans-serif;
+    }
+
+    .upload-main-btn:hover {
+      opacity: 0.95;
     }
 
     .live-banner {
@@ -220,6 +217,7 @@
       border-radius: 999px;
       display: none;
       z-index: 5;
+      font-family: "Open Sans", sans-serif;
     }
 
     .live-banner.show {
@@ -251,6 +249,7 @@
       pointer-events: none;
       transition: 0.25s ease;
       z-index: 100;
+      font-family: "Open Sans", sans-serif;
     }
 
     .toast.show {
@@ -297,6 +296,7 @@
 
     .drawer-header h2 {
       font-size: 18px;
+      font-family: "Montserrat", sans-serif;
     }
 
     .close-btn {
@@ -375,6 +375,7 @@
       font-size: 12px;
       cursor: pointer;
       font-weight: 700;
+      font-family: "Open Sans", sans-serif;
     }
 
     .select-btn {
@@ -407,6 +408,7 @@
       text-align: left;
       cursor: pointer;
       font-weight: 700;
+      font-family: "Open Sans", sans-serif;
     }
 
     @media (max-width: 900px) {
@@ -432,14 +434,14 @@
 
   <aside class="drawer" id="drawer">
     <div class="drawer-header">
-      <h2>Resonance</h2>
+      <h2>Reconance</h2>
       <button class="close-btn" onclick="closeDrawer()">×</button>
     </div>
 
     <div class="drawer-content">
       <div>
         <div class="section-title">Sheet music</div>
-        <label class="upload-label" for="pdfUpload">Upload PDF</label>
+        <label class="upload-label" for="pdfUpload">Upload sheet music</label>
         <input type="file" id="pdfUpload" accept="application/pdf" multiple />
       </div>
 
@@ -482,8 +484,6 @@
             <span style="font-weight:400;">Party 2 has created an active connection.</span>
           </div>
         </div>
-
-        <div class="app-title">Sheet music session</div>
       </div>
 
       <button class="hamburger" onclick="openDrawer()">
@@ -494,8 +494,6 @@
     </div>
 
     <div class="main-area">
-      <div class="page-label" id="pageLabel">Exercise 2</div>
-
       <div class="sheet-container">
         <div class="live-banner" id="liveBanner">
           <span class="live-record-dot"></span>
@@ -504,31 +502,10 @@
 
         <iframe id="pdfViewer" class="pdf-viewer"></iframe>
 
-        <div class="placeholder" id="placeholder">
-          <div class="staff">
-            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M10 30 C80 5, 150 45, 230 20 S390 12, 470 26 S640 38, 760 18 S900 28, 980 14" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
-            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
-          </div>
-          <div class="staff">
-            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M20 28 C100 8, 180 40, 260 18 S420 14, 520 30 S710 34, 820 16 S920 24, 990 20" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
-            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
-          </div>
-          <div class="staff">
-            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M15 29 C90 12, 170 40, 250 19 S420 8, 550 22 S740 40, 860 18 S940 30, 995 22" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
-            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
-          </div>
-          <div class="staff">
-            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M12 27 C100 10, 190 38, 280 18 S470 12, 620 28 S800 36, 920 18" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
-            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
-          </div>
-          <div class="staff">
-            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M18 29 C110 7, 220 44, 330 20 S540 10, 680 24 S850 36, 980 18" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
-            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
-          </div>
-          <div class="staff">
-            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M22 28 C120 9, 200 39, 290 17 S430 11, 590 25 S790 34, 980 16" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
-            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
-          </div>
+        <div class="empty-state" id="emptyState">
+          <h1 class="brand-title">Reconance</h1>
+          <p class="brand-quote">musical bridge between generations</p>
+          <label class="upload-main-btn" for="pdfUpload">Upload sheet music</label>
         </div>
       </div>
     </div>
@@ -539,7 +516,7 @@
     const pdfList = document.getElementById("pdfList");
     const emptyText = document.getElementById("emptyText");
     const pdfViewer = document.getElementById("pdfViewer");
-    const placeholder = document.getElementById("placeholder");
+    const emptyState = document.getElementById("emptyState");
     const drawer = document.getElementById("drawer");
     const drawerOverlay = document.getElementById("drawerOverlay");
     const toast = document.getElementById("toast");
@@ -662,7 +639,7 @@
       currentPdfIndex = index;
       pdfViewer.src = pdf.url;
       pdfViewer.style.display = "block";
-      placeholder.style.display = "none";
+      emptyState.style.display = "none";
       closeDrawer();
     }
 
@@ -674,11 +651,18 @@
 
       if (currentPdfIndex === index) {
         currentPdfIndex = null;
-        pdfViewer.src = "";
-        pdfViewer.style.display = "none";
-        placeholder.style.display = "flex";
       } else if (currentPdfIndex > index) {
         currentPdfIndex--;
+      }
+
+      if (uploadedPdfs.length === 0) {
+        pdfViewer.src = "";
+        pdfViewer.style.display = "none";
+        emptyState.style.display = "flex";
+      } else if (currentPdfIndex === null) {
+        selectPdf(0);
+      } else {
+        selectPdf(currentPdfIndex);
       }
 
       renderPdfList();
