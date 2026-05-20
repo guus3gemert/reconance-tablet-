@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resonance</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #e9e7e3;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 28px;
+      color: #1f1f1f;
+    }
+
+    .app-shell {
+      width: min(1000px, 100%);
+      background: #f8f5f0;
+      border-radius: 18px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      position: relative;
+      min-height: 92vh;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid #e5ddd1;
+      background: rgba(255,255,255,0.55);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+    }
+
+    .left-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #d8bf99;
+      color: #2c241d;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #7c6a58;
+    }
+
+    .status-popover {
+      position: absolute;
+      top: 52px;
+      left: 0;
+      width: 240px;
+      background: white;
+      border: 1px solid #eadfce;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      padding: 12px;
+      display: none;
+      z-index: 30;
+    }
+
+    .status-popover.show {
+      display: block;
+    }
+
+    .status-item {
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.35;
+      margin-bottom: 6px;
+      background: #f8f5f0;
+      border: 1px solid transparent;
+    }
+
+    .status-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .status-item.active {
+      border-color: #d8bf99;
+      background: #efe4d2;
+      font-weight: 700;
+    }
+
+    .app-title {
+      font-size: 15px;
+      color: #6f675d;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .hamburger {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 12px;
+      background: #ede7dd;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 0 11px;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 2px;
+      background: #2b2b2b;
+      border-radius: 2px;
+    }
+
+    .main-area {
+      padding: 22px;
+      position: relative;
+    }
+
+    .page-label {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #403a34;
+    }
+
+    .sheet-container {
+      background: white;
+      border-radius: 14px;
+      border: 1px solid #e5ddd1;
+      min-height: 78vh;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pdf-viewer {
+      width: 100%;
+      height: 75vh;
+      border: none;
+      display: none;
+      border-radius: 10px;
+    }
+
+    .placeholder {
+      display: flex;
+      flex-direction: column;
+      gap: 52px;
+      padding: 10px 10px 18px;
+      min-height: 72vh;
+    }
+
+    .staff {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      position: relative;
+    }
+
+    .staff-line {
+      height: 1px;
+      background: #222;
+      opacity: 0.8;
+    }
+
+    .notes {
+      position: absolute;
+      top: -4px;
+      left: 0;
+      width: 100%;
+      height: 46px;
+      pointer-events: none;
+    }
+
+    .notes svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      opacity: 0.9;
+    }
+
+    .live-banner {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #eadfce;
+      color: #6d6257;
+      padding: 8px 12px;
+      font-size: 12px;
+      border-radius: 999px;
+      display: none;
+      z-index: 5;
+    }
+
+    .live-banner.show {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-record-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #cf3a3a;
+    }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f1f1f;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s ease;
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.18);
+      display: none;
+      z-index: 40;
+    }
+
+    .drawer-overlay.show {
+      display: block;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -360px;
+      width: 340px;
+      height: 100vh;
+      background: #fcfaf7;
+      box-shadow: -12px 0 24px rgba(0,0,0,0.12);
+      transition: right 0.28s ease;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer.show {
+      right: 0;
+    }
+
+    .drawer-header {
+      padding: 22px 20px 16px;
+      border-bottom: 1px solid #e8dfd3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drawer-header h2 {
+      font-size: 18px;
+    }
+
+    .close-btn {
+      border: none;
+      background: #ede7dd;
+      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .drawer-content {
+      padding: 18px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #6f675d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .upload-label {
+      display: block;
+      background: #d8bf99;
+      color: #2d241c;
+      padding: 14px 16px;
+      border-radius: 14px;
+      text-align: center;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .pdf-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pdf-item {
+      background: white;
+      border: 1px solid #eadfce;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pdf-name {
+      font-size: 13px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .pdf-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pdf-actions button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .select-btn {
+      background: #ede7dd;
+      color: #1f1f1f;
+    }
+
+    .remove-btn {
+      background: #f3dddd;
+      color: #8c2f2f;
+    }
+
+    .empty-text {
+      font-size: 13px;
+      color: #7a736b;
+      line-height: 1.5;
+    }
+
+    .state-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .state-buttons button {
+      border: none;
+      background: #ede7dd;
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 12px;
+      }
+
+      .main-area {
+        padding: 14px;
+      }
+
+      .drawer {
+        width: 100%;
+        max-width: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+  <aside class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h2>Resonance</h2>
+      <button class="close-btn" onclick="closeDrawer()">×</button>
+    </div>
+
+    <div class="drawer-content">
+      <div>
+        <div class="section-title">Sheet music</div>
+        <label class="upload-label" for="pdfUpload">Upload PDF</label>
+        <input type="file" id="pdfUpload" accept="application/pdf" multiple />
+      </div>
+
+      <div>
+        <div class="section-title">Uploaded PDFs</div>
+        <div class="pdf-list" id="pdfList"></div>
+        <p class="empty-text" id="emptyText">No PDFs uploaded yet.</p>
+      </div>
+
+      <div>
+        <div class="section-title">Prototype states</div>
+        <div class="state-buttons">
+          <button onclick="setState('idle')">Idle</button>
+          <button onclick="setState('live')">Live</button>
+          <button onclick="setState('listening')">Someone is listening</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="app-shell" id="app">
+    <div class="topbar">
+      <div class="left-top">
+        <button class="status-pill" onclick="toggleStatusPopover()">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusLabel">RESONANCE · Idle</span>
+        </button>
+
+        <div class="status-popover" id="statusPopover">
+          <div class="status-item" id="stateIdle">
+            Idle<br />
+            <span style="font-weight:400;">Resonance is available but not yet live.</span>
+          </div>
+          <div class="status-item" id="stateLive">
+            Live<br />
+            <span style="font-weight:400;">The practice session is being transmitted live.</span>
+          </div>
+          <div class="status-item" id="stateListening">
+            Someone is listening<br />
+            <span style="font-weight:400;">Party 2 has created an active connection.</span>
+          </div>
+        </div>
+
+        <div class="app-title">Sheet music session</div>
+      </div>
+
+      <button class="hamburger" onclick="openDrawer()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="main-area">
+      <div class="page-label" id="pageLabel">Exercise 2</div>
+
+      <div class="sheet-container">
+        <div class="live-banner" id="liveBanner">
+          <span class="live-record-dot"></span>
+          <span id="liveBannerText">Live recording active</span>
+        </div>
+
+        <iframe id="pdfViewer" class="pdf-viewer"></iframe>
+
+        <div class="placeholder" id="placeholder">
+          <div class="staff">
+            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M10 30 C80 5, 150 45, 230 20 S390 12, 470 26 S640 38, 760 18 S900 28, 980 14" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
+            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
+          </div>
+          <div class="staff">
+            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M20 28 C100 8, 180 40, 260 18 S420 14, 520 30 S710 34, 820 16 S920 24, 990 20" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
+            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
+          </div>
+          <div class="staff">
+            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M15 29 C90 12, 170 40, 250 19 S420 8, 550 22 S740 40, 860 18 S940 30, 995 22" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
+            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
+          </div>
+          <div class="staff">
+            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M12 27 C100 10, 190 38, 280 18 S470 12, 620 28 S800 36, 920 18" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
+            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
+          </div>
+          <div class="staff">
+            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M18 29 C110 7, 220 44, 330 20 S540 10, 680 24 S850 36, 980 18" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
+            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
+          </div>
+          <div class="staff">
+            <div class="notes"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M22 28 C120 9, 200 39, 290 17 S430 11, 590 25 S790 34, 980 16" fill="none" stroke="#111" stroke-width="1.5"/></svg></div>
+            <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pdfUpload = document.getElementById("pdfUpload");
+    const pdfList = document.getElementById("pdfList");
+    const emptyText = document.getElementById("emptyText");
+    const pdfViewer = document.getElementById("pdfViewer");
+    const placeholder = document.getElementById("placeholder");
+    const drawer = document.getElementById("drawer");
+    const drawerOverlay = document.getElementById("drawerOverlay");
+    const toast = document.getElementById("toast");
+    const statusPopover = document.getElementById("statusPopover");
+    const statusLabel = document.getElementById("statusLabel");
+    const statusDot = document.getElementById("statusDot");
+    const liveBanner = document.getElementById("liveBanner");
+    const liveBannerText = document.getElementById("liveBannerText");
+
+    const stateIdle = document.getElementById("stateIdle");
+    const stateLive = document.getElementById("stateLive");
+    const stateListening = document.getElementById("stateListening");
+
+    let currentState = "idle";
+    let uploadedPdfs = [];
+    let currentPdfIndex = null;
+
+    function openDrawer() {
+      drawer.classList.add("show");
+      drawerOverlay.classList.add("show");
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove("show");
+      drawerOverlay.classList.remove("show");
+    }
+
+    function toggleStatusPopover() {
+      statusPopover.classList.toggle("show");
+    }
+
+    document.addEventListener("click", function (e) {
+      const leftTop = document.querySelector(".left-top");
+      if (!leftTop.contains(e.target)) {
+        statusPopover.classList.remove("show");
+      }
+    });
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2600);
+    }
+
+    function updateStatusUI() {
+      stateIdle.classList.remove("active");
+      stateLive.classList.remove("active");
+      stateListening.classList.remove("active");
+      liveBanner.classList.remove("show");
+
+      if (currentState === "idle") {
+        statusLabel.textContent = "RESONANCE · Idle";
+        statusDot.style.background = "#7c6a58";
+        stateIdle.classList.add("active");
+      }
+
+      if (currentState === "live") {
+        statusLabel.textContent = "RESONANCE · Live";
+        statusDot.style.background = "#cf3a3a";
+        stateLive.classList.add("active");
+        liveBanner.classList.add("show");
+        liveBannerText.textContent = "Live recording active";
+      }
+
+      if (currentState === "listening") {
+        statusLabel.textContent = "RESONANCE · Listening";
+        statusDot.style.background = "#a16a2f";
+        stateListening.classList.add("active");
+        liveBanner.classList.add("show");
+        liveBannerText.textContent = "Someone is listening";
+      }
+    }
+
+    function setState(state) {
+      currentState = state;
+      updateStatusUI();
+
+      if (state === "live") {
+        showToast("Resonance is live");
+      }
+
+      if (state === "listening") {
+        showToast("Someone is listening");
+      }
+    }
+
+    function renderPdfList() {
+      pdfList.innerHTML = "";
+
+      if (uploadedPdfs.length === 0) {
+        emptyText.style.display = "block";
+        return;
+      }
+
+      emptyText.style.display = "none";
+
+      uploadedPdfs.forEach((pdf, index) => {
+        const item = document.createElement("div");
+        item.className = "pdf-item";
+
+        item.innerHTML = `
+          <div class="pdf-name">${pdf.name}</div>
+          <div class="pdf-actions">
+            <button class="select-btn" onclick="selectPdf(${index})">Open</button>
+            <button class="remove-btn" onclick="removePdf(${index})">Remove</button>
+          </div>
+        `;
+
+        pdfList.appendChild(item);
+      });
+    }
+
+    function selectPdf(index) {
+      const pdf = uploadedPdfs[index];
+      if (!pdf) return;
+
+      currentPdfIndex = index;
+      pdfViewer.src = pdf.url;
+      pdfViewer.style.display = "block";
+      placeholder.style.display = "none";
+      closeDrawer();
+    }
+
+    function removePdf(index) {
+      if (!uploadedPdfs[index]) return;
+
+      URL.revokeObjectURL(uploadedPdfs[index].url);
+      uploadedPdfs.splice(index, 1);
+
+      if (currentPdfIndex === index) {
+        currentPdfIndex = null;
+        pdfViewer.src = "";
+        pdfViewer.style.display = "none";
+        placeholder.style.display = "flex";
+      } else if (currentPdfIndex > index) {
+        currentPdfIndex--;
+      }
+
+      renderPdfList();
+    }
+
+    pdfUpload.addEventListener("change", function (event) {
+      const files = Array.from(event.target.files || []);
+      if (files.length === 0) return;
+
+      files.forEach(file => {
+        const url = URL.createObjectURL(file);
+        uploadedPdfs.push({
+          name: file.name,
+          url: url
+        });
+      });
+
+      renderPdfList();
+
+      if (currentPdfIndex === null && uploadedPdfs.length > 0) {
+        selectPdf(0);
+      }
+
+      event.target.value = "";
+    });
+
+    updateStatusUI();
+  </script>
+</body>
+</html>
