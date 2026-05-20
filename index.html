@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reconance</title>
+  <title>RECONANCE</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
     * {
@@ -16,25 +18,37 @@
       padding: 0;
     }
 
+    :root {
+      --bg: #e8e6e1;
+      --app-bg: #f7f4ef;
+      --panel: #ffffff;
+      --border: #e5ddd1;
+      --soft: #ede7dd;
+      --warm: #d6bd97;
+      --text: #28231f;
+      --muted: #7a7268;
+      --shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+    }
+
     body {
-      background: #e9e7e3;
+      background: var(--bg);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 28px;
-      color: #1f1f1f;
+      padding: 24px;
+      color: var(--text);
       font-family: "Open Sans", sans-serif;
     }
 
     .app-shell {
-      width: min(1000px, 100%);
-      background: #f8f5f0;
-      border-radius: 18px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      position: relative;
+      width: min(1020px, 100%);
       min-height: 92vh;
+      background: var(--app-bg);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      position: relative;
     }
 
     .topbar {
@@ -42,30 +56,30 @@
       justify-content: space-between;
       align-items: center;
       padding: 18px 20px;
-      border-bottom: 1px solid #e5ddd1;
-      background: rgba(255,255,255,0.55);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(8px);
       position: sticky;
       top: 0;
-      z-index: 20;
-      backdrop-filter: blur(6px);
+      z-index: 30;
     }
 
     .left-top {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 12px;
-      position: relative;
+      gap: 14px;
     }
 
     .status-pill {
+      border: none;
+      background: var(--warm);
+      color: #2d241c;
+      border-radius: 999px;
+      padding: 10px 14px;
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: #d8bf99;
-      color: #2c241d;
-      border: none;
-      border-radius: 999px;
-      padding: 10px 14px;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.4px;
@@ -78,20 +92,21 @@
       height: 9px;
       border-radius: 50%;
       background: #7c6a58;
+      flex-shrink: 0;
     }
 
     .status-popover {
       position: absolute;
       top: 52px;
       left: 0;
-      width: 240px;
+      width: 260px;
       background: white;
-      border: 1px solid #eadfce;
+      border: 1px solid var(--border);
       border-radius: 16px;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
       padding: 12px;
       display: none;
-      z-index: 30;
+      z-index: 50;
     }
 
     .status-popover.show {
@@ -101,10 +116,10 @@
     .status-item {
       padding: 10px 12px;
       border-radius: 12px;
+      background: #f8f5f0;
       font-size: 13px;
       line-height: 1.35;
-      margin-bottom: 6px;
-      background: #f8f5f0;
+      margin-bottom: 8px;
       border: 1px solid transparent;
     }
 
@@ -113,8 +128,8 @@
     }
 
     .status-item.active {
-      border-color: #d8bf99;
       background: #efe4d2;
+      border-color: var(--warm);
       font-weight: 700;
     }
 
@@ -123,48 +138,38 @@
       height: 46px;
       border: none;
       border-radius: 12px;
-      background: #ede7dd;
+      background: var(--soft);
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 6px;
-      padding: 0 10px;
+      padding: 0 11px;
       cursor: pointer;
     }
 
     .hamburger span {
       display: block;
-      height: 3px;
-      background: #111111;
-      border-radius: 3px;
       width: 100%;
+      height: 3px;
+      border-radius: 3px;
+      background: #1b1b1b;
     }
 
     .main-area {
-      padding: 22px;
-      position: relative;
+      padding: 20px;
     }
 
     .sheet-container {
-      background: white;
-      border-radius: 14px;
-      border: 1px solid #e5ddd1;
       min-height: 78vh;
-      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       position: relative;
       overflow: hidden;
     }
 
-.pdf-viewer {
-  width: 100%;
-  height: 78vh;
-  display: none;
-  border: none;
-  background: white;
-}
-
     .empty-state {
-      min-height: 72vh;
+      min-height: 78vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -173,26 +178,26 @@
       padding: 40px 20px;
     }
 
-.brand-title {
-  font-family: "Montserrat", sans-serif;
-  font-size: clamp(42px, 7vw, 82px);
-  font-weight: 600;
-  color: #2f2a24;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-}
+    .brand-title {
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(42px, 8vw, 82px);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #2f2a24;
+      margin-bottom: 10px;
+    }
 
     .brand-quote {
       font-size: 18px;
-      color: #7c746c;
+      color: var(--muted);
       margin-bottom: 28px;
       font-weight: 400;
     }
 
     .upload-main-btn {
       border: none;
-      background: #d8bf99;
+      background: var(--warm);
       color: #2d241c;
       padding: 16px 22px;
       border-radius: 14px;
@@ -200,10 +205,56 @@
       font-weight: 700;
       cursor: pointer;
       font-family: "Open Sans", sans-serif;
+      display: inline-block;
     }
 
     .upload-main-btn:hover {
       opacity: 0.95;
+    }
+
+    .pdf-stage {
+      display: none;
+      padding: 22px;
+      min-height: 78vh;
+    }
+
+    .pdf-stage.show {
+      display: block;
+    }
+
+    .pdf-pages {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .pdf-page-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .pdf-page-canvas {
+      width: 100%;
+      max-width: 860px;
+      height: auto;
+      background: white;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+      border-radius: 4px;
+    }
+
+    .loading {
+      display: none;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .loading.show {
+      display: block;
     }
 
     .toast {
@@ -217,7 +268,7 @@
       border-radius: 16px;
       font-size: 14px;
       font-weight: 600;
-      box-shadow: 0 10px 26px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.18);
       opacity: 0;
       pointer-events: none;
       transition: 0.25s ease;
@@ -232,9 +283,9 @@
     .drawer-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.18);
+      background: rgba(0,0,0,0.16);
       display: none;
-      z-index: 40;
+      z-index: 60;
     }
 
     .drawer-overlay.show {
@@ -250,7 +301,7 @@
       background: #fcfaf7;
       box-shadow: -12px 0 24px rgba(0,0,0,0.12);
       transition: right 0.28s ease;
-      z-index: 50;
+      z-index: 70;
       display: flex;
       flex-direction: column;
     }
@@ -267,17 +318,17 @@
       align-items: center;
     }
 
-.drawer-header h2 {
-  font-size: 18px;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-}
+    .drawer-header h2 {
+      font-size: 18px;
+      font-family: "Montserrat", sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
 
     .close-btn {
       border: none;
-      background: #ede7dd;
+      background: var(--soft);
       border-radius: 10px;
       width: 36px;
       height: 36px;
@@ -296,7 +347,7 @@
     .section-title {
       font-size: 13px;
       font-weight: 700;
-      color: #6f675d;
+      color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 8px;
@@ -304,7 +355,7 @@
 
     .upload-label {
       display: block;
-      background: #d8bf99;
+      background: var(--warm);
       color: #2d241c;
       padding: 14px 16px;
       border-radius: 14px;
@@ -325,7 +376,7 @@
 
     .pdf-item {
       background: white;
-      border: 1px solid #eadfce;
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px;
       display: flex;
@@ -342,6 +393,7 @@
     .pdf-actions {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .pdf-actions button {
@@ -355,8 +407,8 @@
     }
 
     .select-btn {
-      background: #ede7dd;
-      color: #1f1f1f;
+      background: var(--soft);
+      color: var(--text);
     }
 
     .remove-btn {
@@ -366,7 +418,7 @@
 
     .empty-text {
       font-size: 13px;
-      color: #7a736b;
+      color: var(--muted);
       line-height: 1.5;
     }
 
@@ -378,7 +430,7 @@
 
     .state-buttons button {
       border: none;
-      background: #ede7dd;
+      background: var(--soft);
       border-radius: 12px;
       padding: 12px 14px;
       text-align: left;
@@ -399,6 +451,14 @@
       .drawer {
         width: 100%;
         max-width: 360px;
+      }
+
+      .pdf-stage {
+        padding: 12px;
+      }
+
+      .brand-quote {
+        font-size: 16px;
       }
     }
   </style>
@@ -438,7 +498,7 @@
     </div>
   </aside>
 
-  <div class="app-shell" id="app">
+  <div class="app-shell">
     <div class="topbar">
       <div class="left-top">
         <button class="status-pill" onclick="toggleStatusPopover()">
@@ -471,24 +531,28 @@
 
     <div class="main-area">
       <div class="sheet-container">
-
-        <embed id="pdfViewer" class="pdf-viewer" type="application/pdf" />
-
         <div class="empty-state" id="emptyState">
           <h1 class="brand-title">RECONANCE</h1>
           <p class="brand-quote">musical bridge between generations</p>
           <label class="upload-main-btn" for="pdfUpload">Upload sheet music</label>
+        </div>
+
+        <div class="loading" id="loadingText">Loading sheet music...</div>
+
+        <div class="pdf-stage" id="pdfStage">
+          <div class="pdf-pages" id="pdfPages"></div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
     const pdfUpload = document.getElementById("pdfUpload");
     const pdfList = document.getElementById("pdfList");
     const emptyText = document.getElementById("emptyText");
-    const pdfViewer = document.getElementById("pdfViewer");
-    const emptyState = document.getElementById("emptyState");
     const drawer = document.getElementById("drawer");
     const drawerOverlay = document.getElementById("drawerOverlay");
     const toast = document.getElementById("toast");
@@ -499,6 +563,11 @@
     const stateIdle = document.getElementById("stateIdle");
     const stateLive = document.getElementById("stateLive");
     const stateListening = document.getElementById("stateListening");
+
+    const emptyState = document.getElementById("emptyState");
+    const loadingText = document.getElementById("loadingText");
+    const pdfStage = document.getElementById("pdfStage");
+    const pdfPages = document.getElementById("pdfPages");
 
     let currentState = "idle";
     let uploadedPdfs = [];
@@ -547,13 +616,13 @@
 
       if (currentState === "live") {
         statusLabel.textContent = "RESONANCE · Live";
-        statusDot.style.background = "#cf3a3a";
+        statusDot.style.background = "#8f6d46";
         stateLive.classList.add("active");
       }
 
       if (currentState === "listening") {
         statusLabel.textContent = "RESONANCE · Listening";
-        statusDot.style.background = "#a16a2f";
+        statusDot.style.background = "#5f4a34";
         stateListening.classList.add("active");
       }
     }
@@ -597,15 +666,62 @@
       });
     }
 
-    function selectPdf(index) {
+    async function renderPdf(url) {
+      emptyState.style.display = "none";
+      pdfStage.classList.remove("show");
+      loadingText.classList.add("show");
+      pdfPages.innerHTML = "";
+
+      const loadingTask = pdfjsLib.getDocument(url);
+      const pdf = await loadingTask.promise;
+
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+
+        const containerWidth = Math.min(pdfPages.clientWidth || 860, 860);
+        const unscaledViewport = page.getViewport({ scale: 1 });
+        const scale = containerWidth / unscaledViewport.width;
+        const viewport = page.getViewport({ scale });
+
+        const wrap = document.createElement("div");
+        wrap.className = "pdf-page-wrap";
+
+        const canvas = document.createElement("canvas");
+        canvas.className = "pdf-page-canvas";
+
+        const context = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        wrap.appendChild(canvas);
+        pdfPages.appendChild(wrap);
+
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+      }
+
+      loadingText.classList.remove("show");
+      pdfStage.classList.add("show");
+    }
+
+    async function selectPdf(index) {
       const pdf = uploadedPdfs[index];
       if (!pdf) return;
 
       currentPdfIndex = index;
-      pdfViewer.src = pdf.url;
-      pdfViewer.style.display = "block";
-      emptyState.style.display = "none";
       closeDrawer();
+
+      try {
+        await renderPdf(pdf.url);
+      } catch (error) {
+        console.error(error);
+        loadingText.classList.remove("show");
+        pdfStage.classList.remove("show");
+        emptyState.style.display = "flex";
+        showToast("Could not load PDF");
+      }
     }
 
     function removePdf(index) {
@@ -621,8 +737,9 @@
       }
 
       if (uploadedPdfs.length === 0) {
-        pdfViewer.src = "";
-        pdfViewer.style.display = "none";
+        pdfPages.innerHTML = "";
+        pdfStage.classList.remove("show");
+        loadingText.classList.remove("show");
         emptyState.style.display = "flex";
       } else if (currentPdfIndex === null) {
         selectPdf(0);
@@ -652,6 +769,12 @@
       }
 
       event.target.value = "";
+    });
+
+    window.addEventListener("resize", () => {
+      if (currentPdfIndex !== null && uploadedPdfs[currentPdfIndex]) {
+        renderPdf(uploadedPdfs[currentPdfIndex].url);
+      }
     });
 
     updateStatusUI();
